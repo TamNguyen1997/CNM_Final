@@ -1,8 +1,12 @@
-var express = require('express');
-var bodyParser = require('body-parser')
-var exphbs = require('express-handlebars');
-var exphbs_section = require('express-handlebars-sections');
-var path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser')
+const exphbs = require('express-handlebars');
+const exphbs_section = require('express-handlebars-sections');
+const path = require('path');
+
+const CONFIG = require("./config/config.json");
+
+const userClient = require("./controllers/client/user-controller");
 
 const app = express();
 app.engine('hbs', exphbs({
@@ -25,6 +29,8 @@ app.use(express.static(
     path.resolve(__dirname, 'public')
 ));
 
-app.listen(3000, () => {
+app.use('/user', userClient);
+
+app.listen(CONFIG.APP.PORT, () => {
     console.log('server running on port 3000');
 });

@@ -1,10 +1,11 @@
-const Sequelize = require("./db");
+const sequelize = require("./db");
+const Sequelize = require("sequelize");
 
-const DetailTransactions = Sequelize.define("detail_transactions", {
-    amount_money: {type: Sequelize.INT},
-    fee_payment: {type: Sequelize.INT},
-    id_tranaction: {type: Sequelize.INT},
-    type_balance: {type: Sequelize.INT},
+const DetailTransactions = sequelize.define("detail_transactions", {
+    amount_money: {type: Sequelize.INTEGER},
+    fee_payment: {type: Sequelize.INTEGER},
+    id_tranaction: {type: Sequelize.INTEGER},
+    type_balance: {type: Sequelize.INTEGER},
 },{
     timestamps: false,
     tableName: "detail_transactions"

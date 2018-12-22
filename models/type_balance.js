@@ -1,7 +1,8 @@
-const Sequelize = require("./db");
+const sequelize = require("./db");
+const Sequelize = require("sequelize");
 
-const TypeBalance = Sequelize.define("type_balance", {
-    id: {type: Sequelize.INT, primaryKey: true, autoIncrement: true},
+const TypeBalance = sequelize.define("type_balance", {
+    id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: Sequelize.STRING},
 },{
     timestamps: false,

@@ -11,4 +11,4 @@ const Sequelize = new sequelize(CONFIG.DB.DATABASE, CONFIG.DB.USERNAME, CONFIG.D
     }
 });
 
-module.exports = {Sequelize};
+module.exports = Sequelize;

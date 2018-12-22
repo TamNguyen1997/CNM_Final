@@ -1,9 +1,10 @@
-const Sequelize = require("./db");
+const sequelize = require("./db");
+const Sequelize = require("sequelize");
 
-const Transaction = Sequelize.define("transaction", {
-    from_user: {type: Sequelize.INT},
-    id: {type: Sequelize.INT, primaryKey: true, autoIncrement: true},
-    to_user: {type: Sequelize.INT},
+const Transaction = sequelize.define("transaction", {
+    from_user: {type: Sequelize.INTEGER},
+    id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+    to_user: {type: Sequelize.INTEGER},
 },{
     timestamps: false,
     tableName: "transaction"

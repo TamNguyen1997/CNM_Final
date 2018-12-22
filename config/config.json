@@ -8,6 +8,6 @@
         "PASSWORD": ""
     },
     "APP":{
-        "PORT": "3000"
+        "PORT": 3000
     }
 }

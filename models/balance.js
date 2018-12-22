@@ -1,10 +1,11 @@
-const Sequelize = require("./db");
+const sequelize = require("./db");
+const Sequelize = require("sequelize");
 
-const Balance = Sequelize.define("Balance", {
-    amount_money: {type: Sequelize.INT},
+const Balance = sequelize.define("Balance", {
+    amount_money: {type: Sequelize.INTEGER},
     content: {type: Sequelize.STRING},
-    id_type_content: {type: Sequelize.INT},
-    id_user: {type: Sequelize.INT},
+    id_type_content: {type: Sequelize.INTEGER},
+    id_user: {type: Sequelize.INTEGER},
 },{
     timestamps: false,
     tableName: "Balance"
