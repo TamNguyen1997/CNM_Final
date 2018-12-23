@@ -33,13 +33,16 @@ router.post("/create", (req, res) => {
         });
     });
 });
-//Edit one User
-router.put('/edit/:id', (req, res)=>{
+//Edit one User info
+router.put('/edit/info/:id', (req, res)=>{
     let value = req.body;
-    User.update({
-        password: value.password,
-        type: value.type,
-        username: value.username
+    UserInfo.update({
+        address: value.address,
+        email: value.email,
+        date_of_birth: value.date_of_birth,
+        name_user: value.name_user,
+        phone: value.phone,
+        status: value.status
     },{
         where:{
             id_user: req.param.id
@@ -47,6 +50,23 @@ router.put('/edit/:id', (req, res)=>{
     }).then(()=>{
         res.json({
             message: "User updated"
+        });
+    });
+});
+//Edit one User info
+router.post('/edit/password/:id', (req, res) => {
+    var oldPassword = req.params.old_password;
+    var newPassword = req.params.new_password
+    User.update({
+        password: newPassword
+    },{
+        where:{
+            id_user: req.params.id,
+            password: oldPassword
+        }
+    }).then(()=>{
+        res.json({
+            message: "Password changed"
         });
     });
 });
