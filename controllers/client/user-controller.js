@@ -2,15 +2,55 @@ const express = require("express");
 const {User} = require("../../models/user");
 const {UserInfo} = require("../../models/user_info");
 var router = express.Router();
-
+// Show all users
 router.get("/", async (req, res) => {
     var rows = await User.findAll();
     var vm = {
-        baihoc: rows,
+        user: rows,
     }
-    res.render("client/user", vm);
+    res.json(vm);
 });
-
+//Delete one user
+router.delete("/delete/:id", async (req, res) => {
+    User.destroy({where:{
+        id_user: req.params.id
+    }}).then(()=>{
+        res.json({
+            message: "Delete completed"
+        });
+    });
+});
+//Create one user
+router.post("/create", (req, res) => {
+    let value = req.body;
+    User.create({
+        password: value.password,
+        type: value.type,
+        username: value.username
+    }).then(()=>{
+        res.json({
+            message: "User added"
+        });
+    });
+});
+//Edit one User
+router.put('/edit/:id', (req, res)=>{
+    let value = req.body;
+    User.update({
+        password: value.password,
+        type: value.type,
+        username: value.username
+    },{
+        where:{
+            id_user: req.param.id
+        }
+    }).then(()=>{
+        res.json({
+            message: "User updated"
+        });
+    });
+});
+//View one user info
 router.get('/detail/:id', (req, res) => {
 
     var id = req.params.id;
@@ -20,13 +60,10 @@ router.get('/detail/:id', (req, res) => {
         }
     }).then((result)=>{
         var vm = {
-            baihoc: result,
-            baitieptheo: rows2
+            info: result,
         }
-         res.render('client/user/detail', vm);
+         res.json(vm);
     });
 });
-
-
 
 module.exports = router;
