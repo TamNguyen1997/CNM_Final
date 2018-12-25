@@ -19,10 +19,12 @@
   "homepage": "https://github.com/TamNguyen1997/CNM_Final#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",
     "express-handlebars-sections": "^1.0.1",
     "handlebars": "^4.0.12",
+    "jsonwebtoken": "^8.4.0",
     "mysql2": "^1.6.4",
     "nodemon": "^1.18.9",
     "path": "^0.12.7",

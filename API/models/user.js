@@ -1,13 +1,14 @@
+'use strict';
 const sequelize = require("./db");
 const Sequelize = require("sequelize");
 
 const User = sequelize.define("user", {
-    created_at: {type: Sequelize.STRING, defaultValue: Sequelize.NOW, allowNull: true},
     id: {type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+    username: {type: Sequelize.STRING},
     password: {type: Sequelize.STRING},
     type: {type: Sequelize.INTEGER},
-    updated_at: {type: Sequelize.STRING, defaultValue: Sequelize.NOW, allowNull: true},
-    username: {type: Sequelize.STRING},
+    created_at: {type: Sequelize.DATE, defaultValue: Sequelize.NOW, allowNull: true},
+    updated_at: {type: Sequelize.DATE, defaultValue: Sequelize.NOW, allowNull: true},
 },{
     timestamps: false,
     tableName: "user"

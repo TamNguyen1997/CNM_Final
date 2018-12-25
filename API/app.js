@@ -7,6 +7,7 @@ const path = require('path');
 const CONFIG = require("./config/config.json");
 
 const userClient = require("./controllers/client/user-controller");
+const authController = require("./controllers/client/auth-controller");
 
 const app = express();
 app.engine('hbs', exphbs({

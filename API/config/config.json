@@ -1,6 +1,6 @@
 {
     "DB":{
-        "DATABASE": "bank",
+        "DATABASE": "internet_banking",
         "HOST": "localhost",
         "DIALECT": "mysql",
         "PORT": "3306",

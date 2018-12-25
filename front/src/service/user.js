@@ -14,7 +14,7 @@ function login(username, password) {
     }
     return axios.post('http://localhost:3000/user/login', requestOptions)
         .then(user => {
-            if(user.data.token) {
+            if(user.data.access_token) {
                 localStorage.setItem('user', JSON.stringify(user));
             }
             return user;
