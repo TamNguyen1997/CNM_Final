@@ -2,6 +2,8 @@ const express = require("express");
 const {User} = require("../../models/user");
 const {UserInfo} = require("../../models/user_info");
 var router = express.Router();
+
+
 // Show all users
 router.get("/", async (req, res) => {
     var rows = await User.findAll();
@@ -9,6 +11,18 @@ router.get("/", async (req, res) => {
         user: rows,
     }
     res.json(vm);
+});
+// Login
+router.post("/login", async (req, res) => {
+    // var rows = await User.findAll();
+    let user = {
+        username: 'VAT',
+        token: 'fake-jwt-token'
+    }
+    // var vm = {
+    //     user: rows,
+    // }
+    res.json(user);
 });
 //Delete one user
 router.delete("/delete/:id", async (req, res) => {
