@@ -2,19 +2,21 @@
 const configSequelize = require("./db");
 const Sequelize = require("sequelize");
 
-const Transaction = configSequelize.define('transaction', {
-  id: {
-    type: Sequelize.INTEGER(11),
-    allowNull: false,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  account_src: {
+const DetailTransaction = configSequelize.define('detail_transaction', {
+  id_tranaction: {
     type: Sequelize.INTEGER(11),
     allowNull: false
   },
-  account_des: {
+  type_balance: {
+    type: Sequelize.INTEGER(3),
+    allowNull: false
+  },
+  amount_money: {
     type: Sequelize.INTEGER(11),
+    allowNull: false
+  },
+  fee_payment: {
+    type: Sequelize.INTEGER(3),
     allowNull: false
   },
   createdAt: {
@@ -28,7 +30,7 @@ const Transaction = configSequelize.define('transaction', {
     defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
   }
 }, {
-  tableName: 'transaction'
+  tableName: 'detail_transaction'
 });
 
-module.exports = { Transaction };
+module.exports = { DetailTransaction };

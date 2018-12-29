@@ -5,25 +5,18 @@ const express = require("express"),
 const authController = require("./auth-controller");
 
 const {User} = require("../../models/user");
-const {UserInfo} = require("../../models/user_info");
+
 var router = express.Router();
 
-
-// Show all users
-router.get("/", authController.isAuthenticated,  async (req, res) => {
-    var rows = await User.findAll();
-    var vm = {
-        user: rows,
-    }
-    res.json(vm);
-});
 // Login
 router.post("/login", async (req, res) => {
+    var params = req.body.data;
     var user = {
-        username: req.body.username,
-        password: MD5(req.body.password).toString()
+        username: params.username,
+        password: MD5(params.password).toString()
     }
-    
+    console.log(params.username);
+    console.log(params);
     User.findAll({where:{
         username: user.username
     }}).then( result => {
@@ -54,8 +47,16 @@ router.post("/login", async (req, res) => {
     })
     
 });
+// Show all users
+router.get("/",  async (req, res) => {
+    var rows = await User.findAll();
+    var vm = {
+        user: rows,
+    }
+    res.json(vm);
+});
 //Delete one user
-router.delete("/delete/:id", authController.isAuthenticated, async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
     User.destroy({where:{
         id: req.params.id
     }}).then(()=>{
@@ -65,7 +66,7 @@ router.delete("/delete/:id", authController.isAuthenticated, async (req, res) =>
     });
 });
 //Create one user
-router.post("/create", authController.isAuthenticated, (req, res) => {
+router.post("/create", (req, res) => {
     let value = req.body;
     console.log(value.username);
     User.create({
@@ -79,9 +80,9 @@ router.post("/create", authController.isAuthenticated, (req, res) => {
     });
 });
 //Edit one User info
-router.put('/edit/info/:id', authController.isAuthenticated, (req, res)=>{
+router.put('/edit/info/:id', (req, res)=>{
     let value = req.body;
-    UserInfo.update({
+    User.update({
         address: value.address,
         email: value.email,
         date_of_birth: value.date_of_birth,
@@ -99,7 +100,7 @@ router.put('/edit/info/:id', authController.isAuthenticated, (req, res)=>{
     });
 });
 //Edit one User info
-router.post('/edit/password/:id', authController.isAuthenticated, (req, res) => {
+router.post('/edit/password/:id', (req, res) => {
     var oldPassword = req.params.old_password;
     var newPassword = req.params.new_password
     User.update({
@@ -116,18 +117,28 @@ router.post('/edit/password/:id', authController.isAuthenticated, (req, res) => 
     });
 });
 //View one user info
-router.get('/detail/:id', authController.isAuthenticated, (req, res) => {
+router.get('/detail/:id', (req, res) => {
 
     var id = req.params.id;
-    UserInfo.findAll({
-        where:{
-            id_user: id
-        }
-    }).then((result)=>{
-        var vm = {
-            info: result,
-        }
-         res.json(vm);
+    User.getUser(id).then((user)=>{
+        if (!user[0]) {
+            return res.json({
+                user,
+                message: "userID not found",
+                success: false
+            });
+        };
+        res.json({
+            user,
+            message: "success",
+            success: true
+        });
+    }).catch(_ => {
+        res.json({
+            user: false,
+            message: "userID not found",
+            success: false
+        });
     });
 });
 

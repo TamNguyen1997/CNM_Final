@@ -8,6 +8,7 @@ const CONFIG = require("./config/config.json");
 
 const userClient = require("./controllers/client/user-controller");
 const authController = require("./controllers/client/auth-controller");
+const accountClient = require("./controllers/client/account-controller");
 
 const app = express();
 app.engine('hbs', exphbs({
@@ -31,6 +32,7 @@ app.use(express.static(
 ));
 
 app.use('/user', userClient);
+app.use('/account', accountClient);
 
 app.listen(CONFIG.APP.PORT, () => {
     console.log('server running on port 3000');
