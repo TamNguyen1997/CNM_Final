@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 29, 2018 at 12:12 PM
+-- Generation Time: Dec 30, 2018 at 03:24 PM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 7.2.10
 
@@ -117,7 +117,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `type`, `createdAt`, `updatedAt`, `name_user`, `date_of_birth`, `address`, `phone`, `email`, `status`, `number_account`) VALUES
-(10, 'VAT', '202cb962ac59075b964b07152d234b70', 1, '2018-12-25 15:41:55', '2018-12-25 15:41:55', '0', '0000-00-00 00:00:00', '0', '0', '0', 0, 0);
+(10, 'VAT', '202cb962ac59075b964b07152d234b70', 1, '2018-12-25 15:41:55', '2018-12-25 15:41:55', '0', '0000-00-00 00:00:00', '0', '0', '0', 0, 0),
+(11, 'abc', '123', 0, '2018-12-30 18:33:52', '2018-12-30 18:33:52', '', '0000-00-00 00:00:00', '', '', '', 0, 0),
+(12, 'admin', '$2b$08$7wG3p.cFWN6XvdVcR6Os7eTF1sufY00z9L79ygZBXX4', 0, '2018-12-30 12:07:43', '2018-12-30 12:07:43', 'admin', '0000-00-00 00:00:00', '', '0123456789', 'asdf@gmail.com', 0, 0),
+(13, 'admin2', '21232f297a57a5a743894a0e4a801fc3', 0, '2018-12-30 12:37:22', '2018-12-30 12:37:22', 'admin', '0000-00-00 00:00:00', '', '0123456789', 'asdf@gmail.com', 0, 0);
 
 --
 -- Indexes for dumped tables
@@ -173,7 +176,7 @@ ALTER TABLE `type_account`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
