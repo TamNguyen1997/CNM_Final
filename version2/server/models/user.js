@@ -20,7 +20,7 @@ const userBase = configSequelize.define('user', {
     allowNull: false
   },
   type: {
-    type: Sequelize.INTEGER(3),
+    type: Sequelize.STRING(10),
     allowNull: false,
     defaultValue: 0
   },
