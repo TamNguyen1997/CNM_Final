@@ -49,8 +49,8 @@ router.get("/user/:id", (req, res) => {
 
 //get all user info
 router.get("/user", async (req, res) => {
-    // const isAutho = await rolesAuthorized(req.user.id, ["admin", "super"]);
-    // if (!isAutho) return res.json({ success: false, message: "Your role cannot access this api"});
+    const isAutho = await rolesAuthorized(req.user.id, ["admin", "super"]);
+    if (!isAutho) return res.json({ success: false, message: "Your role cannot access this api"});
     User.getAllUser()
         .then(users => {
             if (!users[0]) {

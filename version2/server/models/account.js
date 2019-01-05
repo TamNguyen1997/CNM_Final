@@ -76,7 +76,6 @@ class Account extends accountBase {
   };
 
   static async getAccountsUser(userID, doerID) {
-    console.log(userID, doerID);
     const user = await User.getUser(userID);
     const doer = await User.getUser(doerID);
     return Account.find({ userID, status: ActiveAccount })

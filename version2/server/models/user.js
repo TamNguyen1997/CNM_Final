@@ -71,16 +71,6 @@ const userBase = configSequelize.define('user', {
   tableName: 'user'
 });
 class User extends userBase {
-  // static async getUser(userId) {
-  //   return User.findAll({
-  //       where:{
-  //           id: userId
-  //       }
-  //   }).catch(err => {
-  //     console.log(`/user/:id -> User.findById: ${err}`);
-  //     return false;
-  //   })
-  // }
 
   static async signUp(username, password, name, phone, email) {
       const encrypted = await MD5(password).toString();
@@ -97,19 +87,6 @@ class User extends userBase {
       });
   }
 
-  // static async comparePassword(idUser, password, cb) {
-  //     User.findById(idUser)
-  //         .then(async user => {
-  //             compare(password, user.password, (err, same) => {
-  //                 if (err) return cb(err);
-  //                 return cb(null, same);
-  //             });
-  //         })
-  //         .catch(err => {
-  //             cb(err, false);
-  //         });
-  // }
-
   static getUser(idUser) {
       return User.findById(idUser)
           .then(user => {
@@ -125,7 +102,7 @@ class User extends userBase {
   }
 
   static getAllUser() {z
-      return User.findAll({ type: 1 })
+      return User.findAll({ type: "user" })
           .then(users => {
               let usersFilter = [];
               users.forEach(user => {
