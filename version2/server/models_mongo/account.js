@@ -5,8 +5,8 @@ const User = require("./user");
 const autoIncrement = require('mongoose-auto-increment');
 const connection = mongoose.createConnection(process.env.DATABASE_LOCAL_URL);
 
-const ActiveAccount = true,
-      ClosedAccount = false
+const ACTIVE = true,
+      CLOSED = false
 
 autoIncrement.initialize(connection);
 
@@ -62,14 +62,14 @@ class Account extends AccountModel {
         let trans = await Transaction.createTransaction(accountSrc, accountDes, total);
         if(!trans) return false;
 
-        trans = await this.addTransaction(accountSrc, trans._id)
+        trans = await this.addTransaction(accountSrc, trans.id)
         if(!trans) return false;
 
         return trans;
     };
 
     static getAccount(accountId) {
-        return Account.findOne({ _id: accountId, status: ActiveAccount })
+        return Account.findOne({ id: accountId, status: ActiveAccount })
             .then(async (account) => {
                 if (!account) return false;
                 const acc = account.toObject();
@@ -95,9 +95,9 @@ class Account extends AccountModel {
 
     static async getAllAccount(doerID) {
         const doer = await User.getUser(doerID);
-        return Account.find({ status: ActiveAccount })
+        return Account.find({ status: ACTIVE })
             .then(accounts => {
-                if(doer.roles !== "super") {
+                if(doer.type !== "super") {
                     return accounts.map(acc => {
                         acc = acc.toObject();
                         delete acc.balance;
@@ -115,9 +115,9 @@ class Account extends AccountModel {
     static async getAccountsUser(userID, doerID) {
         const user = await User.getUser(userID);
         const doer = await User.getUser(doerID);
-        return Account.find({ userID, status: ActiveAccount })
+        return Account.find({ userID, status: ACTIVE })
             .then(accounts => {
-                if (userID !== doerID && doer.roles === "user" || doer.roles === "admin") {
+                if (userID !== doerID && doer.type === "user" || doer.type === "admin") {
                     return accounts.map(acc => {
                         acc = acc.toObject();
                         delete acc.balance;
@@ -184,7 +184,7 @@ class Account extends AccountModel {
     };
 
     static deleteAccount(accountId) {
-        return Account.findByIdAndUpdate(accountId, {$set: { status: ClosedAccount }})
+        return Account.findByIdAndUpdate(accountId, {$set: { status: CLOSED }})
         .then(res => res)
         .catch(err => {
             console.log("Account.deleteAccount: got error: ", err.message);

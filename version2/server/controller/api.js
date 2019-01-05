@@ -3,13 +3,12 @@ const router = express.Router();
 
 const { User } = require("../models/user");
 const { Account } = require("../models/account");
-
-//check roles function
-async function rolesAuthorized(id, roles) {
+const { Hint } = require("../models/hint");
+//check type function
+async function typeAuthorized(id, type) {
     const u = await User.getUser(id).then(user => user);
-
-    for (let i = 0; i < roles.length; i++) {
-        if (u.roles === roles[i]) {
+    for (let i = 0; i < type.length; i++) {
+        if (u.type === type[i]) {
             return true;
         };
     };
@@ -49,7 +48,7 @@ router.get("/user/:id", (req, res) => {
 
 //get all user info
 router.get("/user", async (req, res) => {
-    const isAutho = await rolesAuthorized(req.user.id, ["admin", "super"]);
+    const isAutho = await typeAuthorized(req.headers.userid, ["admin", "super"]);
     if (!isAutho) return res.json({ success: false, message: "Your role cannot access this api"});
     User.getAllUser()
         .then(users => {
@@ -78,8 +77,8 @@ router.get("/user", async (req, res) => {
 
 //create new user
 router.post("/user", async (req, res) => {
-    // const isAutho = await rolesAuthorized(req.user.id, ["admin", "super"]);
-    // if (!isAutho) return res.json({ success: false, message: "Your role cannot access this api"});
+    const isAutho = await typeAuthorized(req.headers.userid, ["admin", "super"]);
+    if (!isAutho) return res.json({ success: false, message: "Your role cannot access this api"});
 
     const {username, password, phone, email, name} = req.body;
     if (
@@ -103,10 +102,26 @@ router.post("/user", async (req, res) => {
     });
 });
 
+//add fav receiver
+router.post("/user/hintAccnumber/:userId", async (req, res) => {
+    const userId = req.params.userId;
+    let {accNumber, username} = req.body;
+    const acc = await Account.getAccountWithNumber(accNumber);
+    if (!acc) return res.json({ success: false, message: "Can't find account number"});;
+
+    if (username == "" || typeof username != "string") {
+        username = acc.owner;
+    }
+
+    const resp = await User.addHintAccnumber(userId, accNumber, username);
+    if (!resp) return res.json({ success: false, message: "Add new hint failed"});
+
+    res.json({ success: true, message: "success", hint: resp});
+})
 //=========================================ACCOUNT=========================================
 //create new account
 router.post("/account", async (req, res) => {
-    const isAutho = await rolesAuthorized(req.user.id, ["admin", "super"]);
+    const isAutho = await typeAuthorized(req.headers.userid, ["admin", "super"]);
     if (!isAutho) return res.json({ success: false, message: "Your role cannot access this api"});
 
     const {userID} = req.body;
@@ -120,7 +135,7 @@ router.post("/account", async (req, res) => {
 
 //put account balance
 router.put("/account/:accId",async (req, res) => {
-    const isAutho = await rolesAuthorized(req.user.id, ["admin", "super"]);
+    const isAutho = await typeAuthorized(req.headers.userid, ["admin", "super"]);
     if (!isAutho) return res.json({ success: false, message: "Your role cannot access this api"});
 
     const accId = req.params.accId;
@@ -141,10 +156,9 @@ router.get("/account/:accId", async (req, res) => {
 
     let account = await Account.getAccount(accId);
     if(!account) return res.json({ success: false, message: "Get account info failed"});
-
-    if (req.user.id != account.userID) { //check is account owner
+    if (req.headers.userid != account.userID) { //check is account owner
         let accDoRequest = await Account.getAccount(req.user.id); //check is super admin
-        if (accDoRequest.roles !== "super") {
+        if (accDoRequest.type !== "super") {
             delete account.balance;
         }
     };
@@ -154,7 +168,7 @@ router.get("/account/:accId", async (req, res) => {
 
 //get all account
 router.get("/account", async (req, res) => {
-    const accounts = await Account.getAllAccount(req.user.id);
+    const accounts = await Account.getAllAccount(req.params.id);
     if(!accounts) return res.json({ success: false, message: "Get account list failed"});
 
     res.json({ success: true, message: "success", accounts })
@@ -163,7 +177,7 @@ router.get("/account", async (req, res) => {
 //get all account with userID
 router.get("/accounts/:userId", async (req, res) => {
     const userId = req.params.userId;
-    const accounts = await Account.getAccountsUser(userId, req.user.id);
+    const accounts = await Account.getAccountsUser(userId);
     if(!accounts) return res.json({ success: false, message: "Get user's accounts failed"});
     
     res.json({ success: true, message: "success", accounts });
@@ -193,5 +207,31 @@ router.delete("/account/:accId", async (req, res) => {
 
     res.json({ success: true, message: "success", account });
 });
+//=========================================HINT=========================================
+router.post("/hint", async (req, res) => {
+    const {accNumber, username} = req.body;
+
+    const hint = await Hint.createHintAccount(accNumber, username);
+    if (!hint) return res.json({ success: false, message: "Create new hint failed"});
+
+    res.json({ success: true, message: "success", hint});
+});
+
+router.get("/hint/user/:userId", async(req, res) => {
+    const userId = req.params.userId;
+
+    const user = await User.getUser(userId);
+    if (!user) return res.json({ success: false, message: "UserId not found"});
+
+    let hintList = [];
+    for (let i = 0; i < user.hintAccnumber.length; i++) {
+        let hint = await Hint.getHintAccount(user.hintAccnumber[i]) 
+        if(hint) {
+            hintList.push(hint);
+        }
+    }
+    
+    res.json({ success: true, message: "success", hintList});
+})
 
 module.exports = router;

@@ -22,27 +22,15 @@
               </div>
             </div>
             <div class="form-group text-center">
-              <button
-                type="button"
-                class="btn btn-success"
-                :disabled="status.loggingIn"
-                @click="handleSubmit"
-              >
-                <span class="glyphicon glyphicon-user"></span>
-                Login
-              </button>
-              <img
-                v-show="status.loggingIn"
-                src="/loading.gif"
-              >
+              <button type="button" class="btn btn-success" :disabled="status.loggingIn" @click="handleSubmit">
+                    <span class="glyphicon glyphicon-user"></span>
+                    Login
+                  </button>
+              <img v-show="status.loggingIn" src="/loading.gif">
             </div>
             <div class="form-group" style="margin-left: 35px;">
-                <VueRecaptcha
-                  ref="recaptcha"
-                  @verify="onCaptchaVerified"
-                  @expired="onCaptchaExpired"
-                  sitekey="6LdgDVYUAAAAAExWfTTdL9aAcqPXaXLp0f-KlFLR">
-                </VueRecaptcha>
+              <VueRecaptcha ref="recaptcha" @verify="onCaptchaVerified" @expired="onCaptchaExpired" sitekey="6LdgDVYUAAAAAExWfTTdL9aAcqPXaXLp0f-KlFLR">
+              </VueRecaptcha>
             </div>
           </form>
         </div>
@@ -53,56 +41,66 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import VueRecaptcha from "vue-recaptcha"
-
-export default {
-  name: "Login",
-  data() {
-    return {
-      username: "",
-      password: "",
-      submitted: false,
-      recaptchaToken: ""
-    };
-  },
-  computed: {
-    ...mapState("account", ["status"])
-  },
-  components: {
-    VueRecaptcha
-  },
-  created() {
-    // reset login status
-    this.logout();
-  },
-  methods: {
-    ...mapActions("account", ["login", "logout"]),
-    handleSubmit(e) {
-      this.submitted = true;
-      const { username, password, recaptchaToken } = this;
-      if (username && password) {
+  import {
+    mapState,
+    mapActions
+  } from "vuex";
+  import VueRecaptcha from "vue-recaptcha"
+  
+  export default {
+    name: "Login",
+    data() {
+      return {
+        username: "",
+        password: "",
+        submitted: false,
+        recaptchaToken: ""
+      };
+    },
+    computed: {
+      ...mapState("account", ["status"])
+    },
+    components: {
+      VueRecaptcha
+    },
+    created() {
+      // reset login status
+      this.logout();
+    },
+    methods: {
+      ...mapActions("account", ["login", "logout"]),
+      handleSubmit(e) {
+        this.submitted = true;
+        const {
+          username,
+          password,
+          recaptchaToken
+        } = this;
+        if (username && password) {
+          self.grecaptcha.reset();
+          this.login({
+            username,
+            password,
+            recaptchaToken
+          });
+        }
+      },
+      onCaptchaVerified: function(recaptchaToken) {
+        const self = this;
+        self.recaptchaToken = recaptchaToken;
+      },
+      onCaptchaExpired: function() {
         self.grecaptcha.reset();
-        this.login({ username, password, recaptchaToken });
       }
-    },
-    onCaptchaVerified: function (recaptchaToken) {
-      const self = this;
-      self.recaptchaToken = recaptchaToken;
-    },
-    onCaptchaExpired: function () {
-      self.grecaptcha.reset();
     }
-  }
-};
+  };
 </script>
 
 <style lang="css" scoped>
-.fix-vertical-align
-{
-  padding-top: 6px;
-  padding-bottom: 6px;
-  margin: 0;
-  margin-top: 1px;
-}
+  .fix-vertical-align {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin: 0;
+    margin-top: 1px;
+  }
 </style>

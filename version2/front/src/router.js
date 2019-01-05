@@ -22,7 +22,7 @@ export const router = new Router({
         let user = localStorage.getItem('user');
         user = JSON.parse(user);
 
-        if(user.roles === 'admin') {
+        if(user.type === 'admin') {
           return next('/admin');
         }
         next();
@@ -109,7 +109,7 @@ function checkAuthorized(to, from, next) {
   let user = localStorage.getItem('user');
   user = JSON.parse(user);
 
-  if(user.roles !== 'admin') {
+  if(user.type !== 'admin') {
     return next(false);
   }
   next();

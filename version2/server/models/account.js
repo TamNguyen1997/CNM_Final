@@ -51,10 +51,10 @@ class Account extends accountBase {
   } 
 
   static getAccount(accountId) {
-    return Account.findAll({ where: { number: accountId, status: ACTIVE } })
+    return Account.find({ number: accountId, status: ACTIVE })
         .then(async (account) => {
             if (!account) return false;
-            const acc = account.toObject();
+            const acc = account.dataValues;
 
             const user = await User.getUser(acc.user_id);
             if(!user) {
@@ -66,7 +66,6 @@ class Account extends accountBase {
             acc.owner = user.name;
             acc.phone = user.phone;
             acc.email = user.email;
-
             return acc;
         })
         .catch(err => {
@@ -75,64 +74,86 @@ class Account extends accountBase {
         });
   };
 
-  static async getAccountsUser(userID, doerID) {
+  // static async getAccountsUser(userID, doerID) {
+  static async getAccountsUser(userID) {
     const user = await User.getUser(userID);
-    const doer = await User.getUser(doerID);
-    return Account.find({ userID, status: ActiveAccount })
+    return Account.findAll({where:{ user_id: userID, status: ACTIVE }})
         .then(accounts => {
-            if (userID !== doerID && doer.roles === "user" || doer.roles === "admin") {
-                return accounts.map(acc => {
-                    acc = acc.toObject();
+          accounts = accounts.map((acc) => {
+            return acc.dataValues;
+          });
+            if (user.type === "user" || user.type === "admin") {
+                return accounts.map((acc) => {
                     delete acc.balance;
                     delete acc.historyTransaction;
 
                     acc.owner = user.name;
                     acc.phone = user.phone;
                     acc.email = user.email;
-                    return acc
+                    return acc;
                 })
             }
-            return accounts.map(acc => {
-                acc = acc.toObject();
-                
-                acc.owner = user.name;
-                acc.phone = user.phone;
-                acc.email = user.email;
-                return acc
-            })
         })
         .catch(err => {
             console.log("Account.getAccountsUser: ", err.message);
             return false;
         });
   };
-//   static async doTransaction(accountSrc, accountDes, total) {
-//     let account;
-//     //check account exist
-//     account = await this.getAccount(accountDes);
-//     if (!account) return false;
 
-//     account = await this.getAccount(accountSrc);
-//     if (!account) return false;
+  //type = true: user add balance, type = false: user minus balance
+  //default is false
+  static async updateBalance(accountId, total, type) {
+    type = type || false;
 
-//     //check balance
-//     if(total >= account.balance) return false
+    const account = await this.getAccount(accountId);
+    if (!account) return false;
 
-//     //update balance
-//     account = await this.updateBalance(accountSrc, total, false);
-//     if (!account) return false;
+    if(total <= 0) return false;
 
-//     account = await this.updateBalance(accountDes, total, true);
-//     if (!account) return false;
+    let newBalance = 0;
+    if (type) {
+        newBalance = account.balance + total;
+    } else {
+        if(total >= account.balance) return false;
 
-//     let trans = await Transaction.createTransaction(accountSrc, accountDes, total);
-//     if(!trans) return false;
+        newBalance = account.balance - total;
+    };
 
-//     trans = await this.addTransaction(accountSrc, trans._id)
-//     if(!trans) return false;
+    return Account.update({ balance: newBalance } , { where : { number: accountId}})
+        .then(res => res)
+        .catch(err => {
+            console.log("Account.updateBalance: got error: ", err.message);
+            return false
+        });
+};
 
-//     return trans;
-// };
+  static async doTransaction(accountSrc, accountDes, total) {
+    let account;
+    //check account exist
+    account = await this.getAccount(accountDes);
+    if (!account) return false;
+
+    account = await this.getAccount(accountSrc);
+    if (!account) return false;
+
+    //check balance
+    if(total >= account.balance) return false
+
+    //update balance
+    account = await this.updateBalance(accountSrc, total, false);
+    if (!account) return false;
+
+    account = await this.updateBalance(accountDes, total, true);
+    if (!account) return false;
+
+    let trans = await Transaction.createTransaction(accountSrc, accountDes, total);
+    if(!trans) return false;
+
+    trans = await this.addTransaction(accountSrc, trans._id)
+    if(!trans) return false;
+
+    return trans;
+  };
 }
 module.exports = { Account };
 

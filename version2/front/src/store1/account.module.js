@@ -63,7 +63,7 @@ const actions = {
                     commit('addingFailure');
                     dispatch('alert/error', data.message, {root: true});
                 };
-                
+
                 return data
             }, error => {
                 commit('addingFailure');
@@ -95,19 +95,6 @@ const actions = {
                 return data;
             }, error => {
                 commit('addingFailure');
-                dispatch('alert/error', error, { root: true });
-            });
-    },
-
-    getAccount({dispatch, commit}, accNumber) {
-        return userService.getAccount(accNumber)
-            .then(data => {
-                if(data && !data.success) {
-                    dispatch('alert/error', data.message, {root: true});
-                };
-  
-                return data;
-            }, error => {
                 dispatch('alert/error', error, { root: true });
             });
     },
@@ -149,7 +136,7 @@ const actions = {
                 dispatch('alert/error', error, { root: true });
             });
     },
-
+    
     createTransaction({dispatch, commit}, infoObj) {
         commit('addingRequest');
 
@@ -180,7 +167,18 @@ const actions = {
                 dispatch('alert/error', error, { root: true });
             });
     },
-
+    getAccount({dispatch, commit}, accNumber) {
+        return userService.getAccount(accNumber)
+            .then(data => {
+                if(data && !data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                };
+  
+                return data;
+            }, error => {
+                dispatch('alert/error', error, { root: true });
+            });
+    },
     getAllAccountHistoryTrans({dispatch, commit}, accountID) {
         return userService.getAllAccountHistoryTrans(accountID)
             .then(data => {
@@ -221,7 +219,7 @@ const actions = {
                 commit('addingSuccess');
                 dispatch('alert/error', error, { root: true });
             });
-    }
+    },
 };
 
 const mutations = {

@@ -62,7 +62,6 @@ export default {
 
 <style>
 .footer {
-  position: fixed;
   bottom: 0px;
   width: 100%;
   background-color:#f5f5f5;

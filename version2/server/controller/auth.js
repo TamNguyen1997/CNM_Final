@@ -10,7 +10,6 @@ router.post("/login", (req, res) => {
         if (!req.body.recaptchaToken || req.body.recaptchaToken === "") {
             return res.status(400).json({message: "recaptcha is required"});
         }        
-        // console.log(user);
         if (err || !user) {
             return res.status(401).json({
                 message: err || info,
@@ -32,7 +31,6 @@ router.post("/login", (req, res) => {
                     return res.json({ user });
                 });
             }
-            console.log("gg-response: ", response.data);
             res.status(400).json({message: "recaptcha is required"});
         })
         .catch(err => {

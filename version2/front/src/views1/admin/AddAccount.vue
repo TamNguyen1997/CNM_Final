@@ -58,6 +58,7 @@
               >
             </div>
           </div>
+
           <div class="form-group text-center">
             <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="account.status.adding">
               <span class="glyphicon glyphicon-plus"></span>

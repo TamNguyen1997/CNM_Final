@@ -22,9 +22,9 @@ const userBase = configSequelize.define('user', {
   type: {
     type: Sequelize.STRING(10),
     allowNull: false,
-    defaultValue: 0
+    defaultValue: 'user'
   },
-  name_user: {
+  name: {
     type: Sequelize.STRING(50),
     allowNull: false
   },
@@ -78,7 +78,7 @@ class User extends userBase {
       return this.create({
           username: username,
           password: encrypted,
-          name_user: name,
+          name: name,
           phone: phone,
           email: email
         }).catch(err => {
@@ -101,7 +101,7 @@ class User extends userBase {
           })
   }
 
-  static getAllUser() {z
+  static getAllUser() {
       return User.findAll({ type: "user" })
           .then(users => {
               let usersFilter = [];

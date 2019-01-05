@@ -15,8 +15,6 @@ router.post("/login", async (req, res) => {
         username: params.username,
         password: MD5(params.password).toString()
     }
-    console.log(params.username);
-    console.log(params);
     User.findAll({where:{
         username: user.username
     }}).then( result => {
@@ -24,14 +22,12 @@ router.post("/login", async (req, res) => {
             if(result[0].password === user.password){
                 var payload = { username: user.username };
                 var jwtToken = jwt.sign(payload, 'ok', { expiresIn: "30" });
-                console.log('jwtToken: ' + jwtToken);
                 var jsonResponse = {
                     'username': result[0].username,
                     'type': result[0].type,
                     'access_token': jwtToken,
                     'refresh_token': "xxxxx-xxx-xx-x",
                 }
-                console.log(jsonResponse);
                 res.json(jsonResponse);
             } else { 
                 res.json({
@@ -68,7 +64,6 @@ router.delete("/delete/:id", async (req, res) => {
 //Create one user
 router.post("/create", (req, res) => {
     let value = req.body;
-    console.log(value.username);
     User.create({
         username: value.username,
         password: MD5(value.password).toString(),
