@@ -179,7 +179,6 @@ router.get("/accounts/:userId", async (req, res) => {
     const userId = req.params.userId;
     const accounts = await Account.getAccountsUser(userId);
     if(!accounts) return res.json({ success: false, message: "Get user's accounts failed"});
-    
     res.json({ success: true, message: "success", accounts });
 });
 

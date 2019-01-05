@@ -21,7 +21,8 @@
             <b class="acc-number"># No. {{number}}</b>
 
             <span id="money" class="label label-warning text-right d-right money">
-            {{balance.toLocaleString()}} <span class="badge">VNĐ</span>
+            <!-- {{balance.toLocaleString()}} <span class="badge">VNĐ</span> -->
+            {{ balance }} <span class="badge">VNĐ</span>
             </span>
             <label for="money" class="d-right">
                 <i>Balance: &emsp;</i>

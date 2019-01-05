@@ -84,8 +84,8 @@ class Account extends accountBase {
           });
             if (user.type === "user" || user.type === "admin") {
                 return accounts.map((acc) => {
-                    delete acc.balance;
-                    delete acc.historyTransaction;
+                    // delete acc.balance;
+                    // delete acc.historyTransaction;
 
                     acc.owner = user.name;
                     acc.phone = user.phone;
