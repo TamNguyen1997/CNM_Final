@@ -1,0 +1,13 @@
+{
+    "DB":{
+        "DATABASE": "internet_banking",
+        "HOST": "localhost",
+        "DIALECT": "mysql",
+        "PORT": "3306",
+        "USERNAME": "root",
+        "PASSWORD": ""
+    },
+    "APP":{
+        "PORT": 3000
+    }
+}
