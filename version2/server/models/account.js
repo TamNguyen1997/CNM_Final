@@ -51,12 +51,10 @@ class Account extends accountBase {
   } 
 
   static getAccount(accountId) {
-    console.log(accountId);
     return Account.find({where: { number: accountId, status: ACTIVE }})
         .then(async (account) => {
             if (!account) return false;
             const acc = account.dataValues;
-
             const user = await User.getUser(acc.user_id);
             if(!user) {
                 acc.owner = "";
@@ -85,9 +83,6 @@ class Account extends accountBase {
           });
             if (user.type === "user" || user.type === "admin") {
                 return accounts.map((acc) => {
-                    // delete acc.balance;
-                    // delete acc.historyTransaction;
-
                     acc.owner = user.name;
                     acc.phone = user.phone;
                     acc.email = user.email;
@@ -154,12 +149,12 @@ class Account extends accountBase {
   };
 
   static getAccountWithNumber(accNumber) {
-    return Account.findOne({ number: accNumber, status: ActiveAccount })
+    return Account.findOne({ number: accNumber, status: ACTIVE })
     .then(async (account) => {
         if (!account) return false;
         const acc = account.dataValues;
 
-        const user = await User.getUser(acc.userID);
+        const user = await User.getUser(acc.user_id);
         if(!user) {
             acc.owner = "";
             acc.phone = "";
@@ -176,6 +171,15 @@ class Account extends accountBase {
         console.log("Account.find: got error: ", err.message);
         return false;
     });  
+  }
+
+  static deleteAccount(accountId) {
+    return Account.update({ status: CLOSED }, { where: { number: accountId }})
+    .then(res => res)
+    .catch(err => {
+        console.log("Account.deleteAccount: got error: ", err.message);
+        return false
+    });
   }
 }
 

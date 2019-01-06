@@ -77,8 +77,9 @@ export default {
   },
   mounted() {
    const self = this;
-   self.getHintOfUser(self.account.user._id)
+   self.getHintOfUser(self.account.user.id)
     .then(data => {
+      console.log(data);
       if(data && data.success) {
         self.hintList = data.hintList;
       }
@@ -98,11 +99,10 @@ export default {
         self.error("Account number is required");
         return;
       }
-
       self.addHintForUser({
         username: self.name,
         accNumber: self.accNumber,
-        userId: self.account.user._id
+        userId: self.account.user.id
       })
       .then(data => {
         if(data && data.success) {

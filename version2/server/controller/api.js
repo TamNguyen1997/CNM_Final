@@ -108,15 +108,13 @@ router.post("/user", async (req, res) => {
 router.post("/user/hintAccnumber/:userId", async (req, res) => {
     const userId = req.params.userId;
     let {accNumber, username} = req.body;
-    console.log('ok');
     const acc = await Account.getAccountWithNumber(accNumber);
     if (!acc) return res.json({ success: false, message: "Can't find account number"});;
 
     if (username == "" || typeof username != "string") {
         username = acc.owner;
     }
-
-    const resp = await User.addHintAccnumber(userId, accNumber, username);
+    const resp = await Hint.createHintAccount(userId, accNumber, username);
     if (!resp) return res.json({ success: false, message: "Add new hint failed"});
 
     res.json({ success: true, message: "success", hint: resp});
@@ -192,7 +190,7 @@ router.delete("/account/:accId", async (req, res) => {
     let account = await Account.getAccount(accId);
     if(!account) return res.json({ success: false, message: "Get account info failed"});
 
-    if (account.userID != req.user.id) {
+    if (account.userID != req.headers.id) {
         res.json({ success: false, message: "You don't have right" });
         return;
     }
@@ -212,8 +210,14 @@ router.delete("/account/:accId", async (req, res) => {
 //=========================================HINT=========================================
 router.post("/hint", async (req, res) => {
     const {accNumber, username} = req.body;
-
-    const hint = await Hint.createHintAccount(accNumber, username);
+    userId = req.header.userid;
+    if(username === '') {
+        user = await User.getUser(userId);
+        if(!user) 
+            res.json({ success: false, message: "user don't exist" });
+        username = user.username;
+    }
+    const hint = await Hint.createHintAccount(userId, accNumber, username);
     if (!hint) return res.json({ success: false, message: "Create new hint failed"});
 
     res.json({ success: true, message: "success", hint});
@@ -221,13 +225,7 @@ router.post("/hint", async (req, res) => {
 
 router.get("/hint/user/:userId", async(req, res) => {
     const userId = req.params.userId;
-
-    let hint = await Hint.getHintAccount(userId);
-    console.log(hint);
-    let hintList = [];
-    for (let i = 0; i < hint.length; i++) {
-            hintList.push(hint);
-    }
+    let hintList = await Hint.getHintAccount(userId);
     
     res.json({ success: true, message: "success", hintList});
 })
