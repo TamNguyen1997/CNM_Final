@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-
 const { User } = require("../models/user");
 const { Account } = require("../models/account");
 const { Hint } = require("../models/hint");
@@ -288,6 +287,8 @@ router.get("/transaction/:transId", async (req, res) => {
     res.json({ success: true, message: "success", trans });
 })
 
+
+
 router.get("/transactions/:accId", async (req, res) => {
     const accId = req.params.accId;
 
@@ -299,4 +300,16 @@ router.get("/transactions/:accId", async (req, res) => {
 
     res.json({ success: true, message: "success", trans });
 })
+
+// router.get("/transactions/:accId", async (req, res) => {
+//     const accId = req.params.accId;
+
+//     const trans = await Transaction.getAccountTransactions(accId);
+//     if (!trans) {
+//         res.json({ success: false, message: "Transactions not found" });
+//         return;
+//     }
+
+//     res.json({ success: true, message: "success", trans });
+// })
 module.exports = router;

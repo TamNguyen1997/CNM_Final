@@ -19,6 +19,8 @@ const DetailTransaction = configSequelize.define('detail_transaction', {
     type: Sequelize.INTEGER(3),
     allowNull: false
   },
+
+
   createdAt: {
     type: Sequelize.DATE,
     allowNull: false,
@@ -29,6 +31,10 @@ const DetailTransaction = configSequelize.define('detail_transaction', {
     allowNull: false,
     defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
   }
+  // fee_payment: {
+  //   type: Sequelize.INTEGER(3),
+  //   allowNull: false
+  // },
 }, {
   tableName: 'detail_transaction'
 });
