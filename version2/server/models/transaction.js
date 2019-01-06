@@ -175,7 +175,8 @@ class Transaction extends transactionBasic {
 
     return Transaction.findAll({
         where: {
-          accountSrc: accId
+          accountSrc: accId,
+          verify: 1,
         }
       })
       .then(transactions => {
