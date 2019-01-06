@@ -51,7 +51,8 @@ class Account extends accountBase {
   } 
 
   static getAccount(accountId) {
-    return Account.find({ number: accountId, status: ACTIVE })
+    console.log(accountId);
+    return Account.find({where: { number: accountId, status: ACTIVE }})
         .then(async (account) => {
             if (!account) return false;
             const acc = account.dataValues;
@@ -104,8 +105,9 @@ class Account extends accountBase {
   //default is false
   static async updateBalance(accountId, total, type) {
     type = type || false;
-
     const account = await this.getAccount(accountId);
+
+    console.log(account);
     if (!account) return false;
 
     if(total <= 0) return false;
@@ -118,7 +120,6 @@ class Account extends accountBase {
 
         newBalance = account.balance - total;
     };
-
     return Account.update({ balance: newBalance } , { where : { number: accountId}})
         .then(res => res)
         .catch(err => {
@@ -149,11 +150,9 @@ class Account extends accountBase {
     let trans = await Transaction.createTransaction(accountSrc, accountDes, total);
     if(!trans) return false;
 
-    trans = await this.addTransaction(accountSrc, trans._id)
-    if(!trans) return false;
-
     return trans;
   };
+
   static getAccountWithNumber(accNumber) {
     return Account.findOne({ number: accNumber, status: ActiveAccount })
     .then(async (account) => {

@@ -275,17 +275,6 @@ router.put("/transaction/verify/:transId", async (req, res) => {
         res.json({ success: false, message: "Verify transaction failed" });
         return;
     }
-
-    let success;
-    success = await Account.addTransaction(trans.accountSrc, trans._id);
-    if (!success) {
-        console.log("/transaction/verify/:transId addTransaction: failed")
-    }
-    success = await Account.addTransaction(trans.accountDes, trans._id);
-    if (!success) {
-        console.log("/transaction/verify/:transId addTransaction: failed")
-    }
-
     res.json({ success: true, message: "success", trans });
 });
 

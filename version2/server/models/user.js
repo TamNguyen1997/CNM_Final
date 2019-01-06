@@ -89,7 +89,7 @@ class User extends userBase {
   }
 
   static getUser(idUser) {
-      return User.findById(idUser)
+      return User.findByPk(idUser)
           .then(user => {
               user = user.dataValues;
               if (!user) return false
