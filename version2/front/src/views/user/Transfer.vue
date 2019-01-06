@@ -48,9 +48,9 @@
                 >Choose account</option>
                 <option
                   v-for="a in listAccount"
-                  :key="a.id"
+                  :key="a.number"
                   :selected="a.number === selectedAccount"
-                  :value="a.id"
+                  :value="a.number"
                 >{{a.number}}</option>
               </select>
             </div>
@@ -196,7 +196,7 @@ export default {
       optCode: "",
       description: "",
       accountInfo: {
-        id: null,
+        number: null,
         owner: "",
         email: "",
         phone: ""
@@ -255,7 +255,7 @@ export default {
             self.accountInfo = data.account;
           } else {
             self.accountInfo = {
-              id: null,
+              number: null,
               owner: "",
               email: "",
               phone: ""
@@ -286,7 +286,7 @@ export default {
           self.optCode = "";
           self.description = "";
           self.accountInfo = {
-            id: null,
+            number: null,
             owner: "",
             email: "",
             phone: ""
@@ -311,13 +311,13 @@ export default {
         return;
       }
 
-      if(!self.accountInfo.id) {
+      if(!self.accountInfo.number) {
         self.error("Please input receive account number");
         return;
       }
       
       self.createTransaction({
-        accDes: self.accountInfo.id,
+        accDes: self.accountInfo.number,
         description: self.description, 
         feeCharger: self.feeCharger,
         total: self.inputMoney,

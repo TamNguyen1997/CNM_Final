@@ -3,6 +3,7 @@ const configSequelize = require("./db");
 const Sequelize = require("sequelize");
 const MD5 = require('crypto-js/md5');
 
+const {Hint} = require("./hint");
 
 const userBase = configSequelize.define('user', {
   id: {

@@ -4,7 +4,7 @@
             <h3 class="panel-title">
                 <span class="glyphicon glyphicon-time"></span>
                 &emsp;
-                <span>{{getDate}}</span>
+                <span>{{ getDate }}</span>
                 <span class="glyphicon glyphicon-info-sign d-right"></span>
             </h3>
         </div>
@@ -12,7 +12,7 @@
         <div class="panel-body">
             <b class="acc-number" 
                 v-bind:class="{ 'text-info': selectedNumber === numberSrc }"
-            ># No. {{numberSrc}}</b>&emsp;
+            ># No. {{ numberSrc }}</b>&emsp;
             <span class="glyphicon glyphicon-share-alt"></span>&emsp;
             <b class="acc-number"
              v-bind:class="{ 'text-info': selectedNumber === numberDes }"
@@ -43,7 +43,8 @@ export default {
       account: state => state.account
     }),
     getDate() {
-        var a = new Date(this.date * 1000);
+        var a = new Date(this.date);
+        console.log(a);
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         var year = a.getFullYear();
         var month = months[a.getMonth()];

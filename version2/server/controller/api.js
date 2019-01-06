@@ -4,6 +4,8 @@ const router = express.Router();
 const { User } = require("../models/user");
 const { Account } = require("../models/account");
 const { Hint } = require("../models/hint");
+const { Transaction, DEFAULT_FEE } = require("../models/transaction");
+
 //check type function
 async function typeAuthorized(id, type) {
     const u = await User.getUser(id).then(user => user);
@@ -106,6 +108,7 @@ router.post("/user", async (req, res) => {
 router.post("/user/hintAccnumber/:userId", async (req, res) => {
     const userId = req.params.userId;
     let {accNumber, username} = req.body;
+    console.log('ok');
     const acc = await Account.getAccountWithNumber(accNumber);
     if (!acc) return res.json({ success: false, message: "Can't find account number"});;
 
@@ -157,7 +160,7 @@ router.get("/account/:accId", async (req, res) => {
     let account = await Account.getAccount(accId);
     if(!account) return res.json({ success: false, message: "Get account info failed"});
     if (req.headers.userid != account.userID) { //check is account owner
-        let accDoRequest = await Account.getAccount(req.user.id); //check is super admin
+        let accDoRequest = await Account.getAccount(req.headers.userid); //check is super admin
         if (accDoRequest.type !== "super") {
             delete account.balance;
         }
@@ -219,18 +222,94 @@ router.post("/hint", async (req, res) => {
 router.get("/hint/user/:userId", async(req, res) => {
     const userId = req.params.userId;
 
-    const user = await User.getUser(userId);
-    if (!user) return res.json({ success: false, message: "UserId not found"});
-
+    let hint = await Hint.getHintAccount(userId);
+    console.log(hint);
     let hintList = [];
-    for (let i = 0; i < user.hintAccnumber.length; i++) {
-        let hint = await Hint.getHintAccount(user.hintAccnumber[i]) 
-        if(hint) {
+    for (let i = 0; i < hint.length; i++) {
             hintList.push(hint);
-        }
     }
     
     res.json({ success: true, message: "success", hintList});
 })
 
+//=========================================TRANSACTION=========================================
+router.post("/transaction/:accId", async (req, res) => {
+    const accId = req.params.accId;
+    const {accDes, description, feeCharger} = req.body;
+    const total = parseFloat(req.body.total);
+    console.log(req.body);
+    console.log(accId);
+    let account = await Account.getAccount(accId);
+    if(!account) return res.json({ success: false, message: "Get account info failed"});
+
+    if (account.userID != req.headers.userId) {
+        res.json({ success: false, message: "You don't have right" });
+        return;
+    }
+
+    if (feeCharger && account.balance - DEFAULT_FEE < total) {
+        res.json({ success: false, message: "Account's balance not enough" });
+        return;
+    } else if (account.balance < total - DEFAULT_FEE) {
+        res.json({ success: false, message: "Account's balance not enough" });
+        return;
+    }
+
+    Transaction.createTransaction(accId, accDes, total, description, feeCharger)
+        .then(trans => {
+            trans.accountSrcNumber = account.number
+            res.json({ success: true, message: "success", trans });
+        })
+        .catch(err => {
+            console.log("hehe", err)
+            res.json({ success: false, message: err });
+        });
+});
+
+router.put("/transaction/verify/:transId", async (req, res) => {
+    const transId = req.params.transId;
+    const opt = req.body.opt;
+
+    const trans = await Transaction.verifyTransaction(transId, opt)
+    if (!trans) {
+        res.json({ success: false, message: "Verify transaction failed" });
+        return;
+    }
+
+    let success;
+    success = await Account.addTransaction(trans.accountSrc, trans._id);
+    if (!success) {
+        console.log("/transaction/verify/:transId addTransaction: failed")
+    }
+    success = await Account.addTransaction(trans.accountDes, trans._id);
+    if (!success) {
+        console.log("/transaction/verify/:transId addTransaction: failed")
+    }
+
+    res.json({ success: true, message: "success", trans });
+});
+
+router.get("/transaction/:transId", async (req, res) => {
+    const transId = req.params.transId;
+
+    const trans = await Transaction.getTransaction(transId);
+    if (!trans) {
+        res.json({ success: false, message: "Transaction not found" });
+        return;
+    }
+
+    res.json({ success: true, message: "success", trans });
+})
+
+router.get("/transactions/:accId", async (req, res) => {
+    const accId = req.params.accId;
+
+    const trans = await Transaction.getAccountTransactions(accId);
+    if (!trans) {
+        res.json({ success: false, message: "Transactions not found" });
+        return;
+    }
+
+    res.json({ success: true, message: "success", trans });
+})
 module.exports = router;

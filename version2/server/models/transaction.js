@@ -3,6 +3,10 @@ const configSequelize = require("./db");
 const Sequelize = require("sequelize");
 const { sendMail } = require("../lib/mailer");
 
+const {User} = require("./user");
+const {Account} = require("./account");
+
+const  DEFAULT_FEE = 1000;
 const transactionBasic = configSequelize.define('transaction', {
   id: {
     type: Sequelize.INTEGER(11),
@@ -59,6 +63,7 @@ class Transaction extends transactionBasic {
       if (typeof total !== "number" && total <= 0 ) {
           return Promise.reject("total can not < 0!")
       };
+    //   console.log(accountSrc + "-" + accountDes + "-" + total + "-" + description+ "-" + feeCharger);
 
       if(feeCharger === false) {
           total -= DEFAULT_FEE
@@ -92,6 +97,7 @@ class Transaction extends transactionBasic {
   }
 
   static verifyTransaction(transId, optcode) {
+    //   console.log(transId + " - " + optcode );
       return Transaction.findById(transId)
           .then(async (trans) => {
               if (!trans) return false;
@@ -151,21 +157,20 @@ class Transaction extends transactionBasic {
   }
 
   static async getAccountTransactions(accId) {
-      const results = [];
-      const accSrc = await Account.getAccount(accId);
-      if(!accSrc) {
-          console.log("Transaction.getAccountTransactions: failed");
-          return false;
-      }
 
-      for (let i = 0; i < accSrc.historyTransaction.length; i++) {
-          const trans = await this.getTransaction(accSrc.historyTransaction[i]);
-          if (trans) {
-              results.push(trans);
-          }
-      }
-
-      return results;
+      return Transaction.findAll({where: {accountSrc: accId}})
+        .then(transactions => {
+            let result = [];
+            transactions.forEach(trans => {
+                trans = trans.dataValues;
+                result.push(trans);
+            });
+            return result;
+        })
+        .catch(err => {
+            console.log("Transaction.getAccountTransactions: got err", err)
+            return err.message;
+        });
   }
 };
 

@@ -154,6 +154,32 @@ class Account extends accountBase {
 
     return trans;
   };
+  static getAccountWithNumber(accNumber) {
+    return Account.findOne({ number: accNumber, status: ActiveAccount })
+    .then(async (account) => {
+        if (!account) return false;
+        const acc = account.dataValues;
+
+        const user = await User.getUser(acc.userID);
+        if(!user) {
+            acc.owner = "";
+            acc.phone = "";
+            acc.email = "";
+        }
+
+        acc.owner = user.name;
+        acc.phone = user.phone;
+        acc.email = user.email;
+
+        return acc;
+    })
+    .catch(err => {
+        console.log("Account.find: got error: ", err.message);
+        return false;
+    });  
+  }
 }
+
+
 module.exports = { Account };
 

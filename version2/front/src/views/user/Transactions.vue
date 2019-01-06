@@ -21,9 +21,9 @@
               >Choose account</option>
               <option
                 v-for="a in listAccount"
-                :key="a.id"
+                :key="a.number"
                 :selected="a.number === selectedAccount"
-                :value="a.id"
+                :value="a.number"
               >{{a.number}}</option>
             </select>
           </div>
@@ -32,11 +32,10 @@
         <TransactionBox
           v-for="t in transSelectedAcc"
           :key="t.id"
-          :numberSrc="t.accountSrcNumber"
-          :numberDes="t.accountDesNumber"
+          :numberSrc="t.accountSrc"
+          :numberDes="t.accountDes"
           :total="t.total"
-          :date="t.create_at"
-          :selectedNumber="getAccNumber"
+          :date="t.createdAt"
         ></TransactionBox>
       </div>
         
@@ -80,7 +79,6 @@ export default {
         .then(data => {
           if(data && data.success) {
             self.transSelectedAcc = data.trans;
-            console.log(data.trans)
           }
         })
       }
@@ -92,6 +90,7 @@ export default {
     .then(data => {
       if(data && data.success) {
         self.listAccount = data.accounts;
+        console.log(self.listAccount);
       };
     })
   },

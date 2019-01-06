@@ -2,13 +2,13 @@
 const configSequelize = require("./db");
 const Sequelize = require("sequelize");
 
-const hintBase = configSequelize.define('account', {
+const hintBase = configSequelize.define('hint', {
     username: {
         type: Sequelize.STRING(50),
         allowNull: false
       },
-    number: {
-        type: Sequelize.INTEGER(10),
+    userId: {
+        type: Sequelize.INTEGER(11),
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
@@ -26,8 +26,8 @@ class Hint extends hintBase {
             return false;
         });
       } 
-    static getHintAccount(username) {
-        return Hint.findById(hintId)
+    static getHintAccount(userId) {
+        return Hint.findById(userId)
         .then(hint => {
             if (!hint) return false;
             return hint;
@@ -39,4 +39,4 @@ class Hint extends hintBase {
     }
 }
 
-module.exports = Hint;
+module.exports = { Hint };
