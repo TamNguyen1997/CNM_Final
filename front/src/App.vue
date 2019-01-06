@@ -65,4 +65,7 @@ export default {
   padding: 8px;
   text-align: center;
 }
+body{
+  background-color: #b3e6ff;
+}
 </style>
