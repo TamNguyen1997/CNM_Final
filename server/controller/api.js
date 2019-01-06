@@ -147,7 +147,7 @@ router.put("/account/:accId",async (req, res) => {
 
     res.json({ success: true, message: "success", payload:{
         total: parseInt(total),
-        accNumber: accountInfo.number
+        accNumber: accId
     }});    
 });
 

@@ -17,8 +17,8 @@
 
     <div class="footer">
         <p>  
-          © 2018 Copyright - FIT HCMUS - CNM Final Project <br />
-          MSSV: 1512510 - 1512501 - 1512540
+          © 2018 Copyright - FIT HCMUS<br />
+          MSSV: 1512470 - 1512475 - 1512483
         </p>
     </div>
 
