@@ -7,3 +7,5 @@ export default {
         api: ""
     }
 }
+
+//Config JS from the orgirnal

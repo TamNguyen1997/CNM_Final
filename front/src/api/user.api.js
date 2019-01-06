@@ -19,7 +19,7 @@ export const userService = {
     addHintForUser
 };
 
-//authenticate api
+//authenticate api API For User
 function login(username, password, recaptchaToken) {
     const requestOptions = {
         method: 'POST',
@@ -52,7 +52,10 @@ function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
 }
-
+// function logout() {
+//     // remove user from local storage to log user out
+//     localStorage.removeItem('user');
+// }
 
 function refreshtoken() {
     const user = JSON.parse(localStorage.getItem('user'));

@@ -6,7 +6,6 @@ import Admin from './views/admin/Admin.vue'
 import Adduser from './views/admin/AddUser.vue'
 import Addaccount from './views/admin/AddAccount.vue'
 import Recharge from './views/admin/Recharge.vue'
-
 import Accounts from './views/user/Accounts.vue'
 import Transfer from './views/user/Transfer.vue'
 import Transactions from './views/user/Transactions.vue'

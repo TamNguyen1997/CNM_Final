@@ -11,21 +11,16 @@
         </div>
       </div>
       <div v-else><router-view/></div>
-
       <div class="text-center" v-if="alert.message" :class="`alert ${alert.type}`">{{alert.message}}</div>
     </div>
-
     <div class="footer">
         <p>  
           © 2018 Copyright - FIT HCMUS<br />
           MSSV: 1512470 - 1512475 - 1512483
         </p>
     </div>
-
-
   </div>
 </template>
-
 <script>
 import { mapState, mapActions } from "vuex";
 import Navbar from "./components/Navbar.vue";
@@ -70,5 +65,4 @@ export default {
   padding: 8px;
   text-align: center;
 }
-
 </style>
